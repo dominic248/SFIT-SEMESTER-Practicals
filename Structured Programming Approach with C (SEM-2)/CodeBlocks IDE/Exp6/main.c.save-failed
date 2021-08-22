@@ -1,0 +1,339 @@
+#include<stdio.h>
+#include<conio.h>
+#include<stdlib.h>
+typedef struct node
+{
+    int data;
+    struct node * next;
+} node;
+node *create();
+node *insert_b(node *head,int x);
+node *insert_e(node *head,int x);
+node *insert_in(node *head, int x);
+node *delete_b(node *head);
+node *delete_e(node *head);
+node *delete_in(node *head);
+node *reverse(node *head);
+void search(node *head);
+void print(node *head);
+node *copy(node *);
+int count (node *);
+node *concatenate(node *,node *);
+void split(node *);
+void main()
+{
+    int op,op1,x;
+    node *head=NULL;
+    node *head1=NULL,*head2=NULL,*head3=NULL;
+    //clrscr();
+    do
+    {
+        printf("\n 1)Create\n 2)Insert\n 3)Delete\n 4)Search");
+        printf("\n 5)Reverse\n 6)Print\n 7)Count\n 8)Copy\n 9)Concatenate");
+        printf("\n 10)Split\n 11)Quit");
+        printf("\nEnter your choice");
+        scanf("%d",&op);
+        switch(op)
+        {
+        case 1:
+            head=create();
+            break;
+        case 2:
+            printf("\n\t1)Beginning\n\t 2)End\n\t 3)In between");
+            printf("\n Enter your choice");
+            scanf("%d",&op1);
+            printf("Enter the data to be inserted:");
+            scanf("%d",&x);
+            switch(op1)
+            {
+            case 1:
+                head=insert_b(head,x);
+                break;
+            case 2:
+                head=insert_e(head,x);
+                break;
+            case 3:
+                head=insert_in(head,x);
+                break;
+            }
+            break;
+        case 3:
+            printf("\n\t 1)Beginning \n\t 2)End \n\t 3)In between");
+
+            printf("\n Enter your choice");
+            scanf("%d",&op1);
+            switch(op1)
+            {
+            case 1:
+                head=delete_b(head);
+                break;
+            case 2:
+                head=delete_e(head);
+                break;
+            case 3:
+                head=delete_in(head);
+                break;
+            }
+            break;
+        case 4:
+            search(head);
+            break;
+        case 5:
+            head=reverse(head);
+            print(head);
+            break;
+        case 6:
+            print(head);
+            break;
+        case 7:
+            printf("\nNo.of nodes=%d",count(head));
+            break;
+        case 8:
+            head1=copy(head);
+
+            printf("\nOriginal Linked List:");
+            print(head);
+            printf("\nCopied Linked List:");
+            print(head1);
+            break;
+        case 9:
+            printf("\n enter the first linked list");
+            head1=create();
+            printf("\n enter the second linked list");
+            head2=create();
+            head3=concatenate(head1,head2);
+            printf("\nconcatenate linked list");
+            print(head3);
+            break;
+        case 10:
+            printf("\n enter a linked list:");
+            head1=create();
+            split(head1);
+        }
+    }
+    while(op!=11);
+}
+node*create()
+{
+    node*head,*p;
+    int i,n;
+    head=NULL;
+    printf("\n enter no of data");
+
+    scanf("%d",&n);
+    printf("\n enter the data:");
+    for(i=0; i<n; i++)
+    {
+        if(head==NULL)
+            p=head=(node*)malloc(sizeof(node));
+        else
+        {
+            p->next=(node*)malloc(sizeof(node));
+            p=p->next;
+        }
+        p->next=NULL;
+        scanf("%d",&(p->data));
+    }
+    return(head);
+}
+node *insert_b(node *head,int x)
+{
+    node *p;
+    p=(node*)malloc(sizeof(node));
+    p->data=x;
+    p->next=head;
+    head=p;
+    return(head);
+}
+node *insert_e(node *head,int x)
+{
+    node *p,*q;
+    p=(node*)malloc(sizeof(node));
+    p->data=x;
+    p->next=NULL;
+    if(head==NULL)
+        return(p);
+    for(q=head; q->next!=NULL; q=q->next);
+    q->next=p;
+    return(head);
+}
+node*insert_in(node*head,int x)
+{
+    node *p,*q;
+    int y;
+    p=(node*)malloc(sizeof(node));
+    p->data=x;
+    p->next=NULL;
+    printf("\n insert after which number?:");
+    scanf("%d",&y);
+    for(q=head; q!=NULL&&q->data!=y; q=q->next);
+    if(q!=NULL)
+    {
+        q->next=q->next;
+        q->next=p;
+    }
+    else
+        printf("\ndata not found");
+    return(head);
+}
+node*delete_b(node*head)
+{
+    node *p,*q;
+    if(head==NULL)
+    {
+        printf("\n Empty Linked List");
+        return(head);
+    }
+    p=head;
+    head=head->next;
+    free(p);
+    return(head);
+}
+node *delete_e(node*head)
+{
+    node *p,*q;
+    if(head==NULL)
+    {
+        printf("Empty Linked List");
+        return(head);
+    }
+    p=head;
+    if(head->next==NULL)
+    {
+        head=NULL;
+        free(p);
+        return(head);
+    }
+    for(q=head; q->next->next!=NULL; q=q->next)
+        p=q->next;
+    q->next=NULL;
+    free(p);
+    return(head);
+}
+node *delete_in(node *head)
+{
+    node *p,*q;
+    int x,i;
+    if(head==NULL)
+    {
+        printf("\nEmpty Linked List");
+        return(head);
+    }
+    printf("\n Enter the data to be deleted");
+    scanf("%d",&x);
+    if(head->data==x)
+    {
+        p=head;
+        head=head->next;
+        free(p);
+        return(head);
+    }
+    for(q=head; q->next->data!=x&&q->next!=NULL; q=q->next)
+        if(q->next==NULL)
+        {
+            printf("\nData Not Found");
+            return(head);
+        }
+    p=q->next;
+    q->next=q->next->next;
+    free(p);
+    return(head);
+}
+void search(node *head)
+{
+    node *p;
+    int data,loc=1;
+    printf("\nEnter the data to be searched");
+    scanf("%d",&data);
+    p=head;
+    while(p!=NULL&&p->data!=data)
+    {
+        loc++;
+        p=p->next;
+    }
+    if(p==NULL)
+        printf("\n Not Found");
+    else
+        printf("\n Found at location=%d",loc);
+}
+void print(node *head)
+{
+    node *p;
+    printf("\n\n");
+    for(p=head; p!=NULL; p=p->next)
+        printf("%d",p->data);
+}
+node*reverse(node *head)
+{
+    node *p,*q,*r;
+    p=NULL;
+    q=head;
+    r=q->next;
+    while(q!=NULL)
+    {
+        q->next=p;
+        p=q;
+        q=r;
+        if(q!=NULL)
+            r=q->next;
+    }
+    return(p);
+}
+node *copy(node *h)
+{
+    node *head=NULL,*p;
+    if(h==NULL)
+        return head;
+    head=p=(node *)malloc(sizeof(node));
+    p->data=h->data;
+    while(h->next!=NULL)
+    {
+        p->next=(node*)malloc(sizeof(node));
+        p=p->next;
+        h=h->next;
+        p->data=h->data;
+    }
+    p->next=NULL;
+    return(head);
+}
+int count(node *h)
+{
+    int i;
+    for(i=0; h!=NULL; h=h->next)
+        i++;
+    return(i);
+}
+node *concatenate(node *h1,node *h2)
+{
+    node *p;
+    if(h1==NULL)
+        return(h2);
+    if(h2==NULL)
+        return(h1);
+    p=h1;
+    while(p->next!=NULL)
+        p=p->next;
+    p->next=h2;
+    return(h1);
+}
+void split(node *h1)
+{
+    node *p,*q,*h2;
+    printf("\n Linked list to be split:");
+    print(h1);
+    if(h1==NULL)
+        return;
+    p=h1;
+    q=h1->next;
+    while(q!=NULL&&q->next!=NULL)
+    {
+        q=q->next->next;
+        p=p->next;
+    }
+    h2=p->next;
+    p->next=NULL;
+    printf("\n First half:");
+    print(h1);
+    printf("\n Second half:");
+    print(h2);
+}
